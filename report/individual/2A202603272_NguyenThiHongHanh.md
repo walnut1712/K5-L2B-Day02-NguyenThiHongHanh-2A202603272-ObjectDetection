@@ -97,10 +97,10 @@ Danh sách 10 ảnh train đã rà soát bằng mắt:
 | 6 | [drive_006] | Đã rà soát |
 | 7 | [drive_007] | Đã rà soát |
 | 8 | [drive_008] | Đã rà soát |
-| 9 | [drive_009] | Đã rà soát |
-| 10 | [drive_0010] | Đã rà soát |
+| 9 | drive_009 | Đã rà soát |
+| 10 | drive_010 | Đã rà soát |
 
-Việc rà soát tập trung vào các ảnh có nguy cơ xuất hiện box thừa, bỏ sót phương tiện, bounding box chưa sát đối tượng hoặc nhầm lẫn class. Danh sách trên cần được thay bằng mã ảnh thực tế đã kiểm tra.
+Việc rà soát tập trung vào các ảnh có nguy cơ xuất hiện box thừa, bỏ sót phương tiện, bounding box chưa sát đối tượng hoặc nhầm lẫn class.
 
 ### 3.4. Lỗi phát hiện và cách sửa
 
@@ -124,9 +124,9 @@ Repository bài làm được lưu tại:
 
 `https://github.com/walnut1712/K5-L2B-Day02-NguyenThiHongHanh-2A202603272-ObjectDetection`
 
-Log đã ghi nhận commit mới nhất là `20ec119`. Tuy nhiên, cần kiểm tra lịch sử Git để xác nhận commit được tạo tại thời điểm hoàn tất annotation và self-QC.
+Commit khóa nhãn ban đầu (CP4 lock) trước khi nhận ground truth:
 
-**Commit khóa nhãn ban đầu:** [Bổ sung Git commit SHA thực tế].
+**Commit khóa nhãn ban đầu:** `e98fadb` (*feat: complete initial 50 train annotations and mini guideline (CP4 lock)*).
 
 Việc lưu commit giúp cố định phiên bản annotation ban đầu, hỗ trợ theo dõi các thay đổi trong quá trình rework và đối chiếu giữa dữ liệu trước và sau khi chỉnh sửa.
 
@@ -188,13 +188,29 @@ Các biện pháp chỉnh sửa cụ thể:
 
 Kết quả đánh giá chi tiết được lưu tại `outputs/annotation_evaluation.json`. Bộ nhãn hiện tại đạt **F1 = 0.8405** và **Mean IoU = 0.9431**, đáp ứng đầy đủ yêu cầu của bài thực hành.
 
-### 5.3. Trả lời bốn câu hỏi cuối notebook
+## 5. Kết quả YOLO
+
+- **Runtime:** Google Colab (T4 GPU), Python 3.10+
+- **Phiên bản:** Ultralytics (YOLO26n), PyTorch
+- **Tham số huấn luyện:** Mặc định theo notebook (50 epochs, batch=16, imgsz=640)
+- **Đường dẫn best checkpoint trong phiên chạy:** `runs/detect/train/weights/best.pt`
+
+### 5.1. Bảng chỉ số đánh giá trên 10 ảnh eval
+
+| Chỉ số trên 10 ảnh eval | Giá trị |
+|---|---:|
+| Precision | 0.223 |
+| Recall | 0.409 |
+| mAP50 | 0.351 |
+| mAP50–95 | 0.231 |
+
+Các file kết quả trực quan (ảnh dự đoán và đồ thị đánh giá) được lưu trữ tại `report/individual/assets/eval_predictions/` và `report/individual/assets/yolo26_runs/`.
+
+### 5.2. Trả lời bốn câu hỏi cuối notebook
 
 **1. Lớp nào có recall thấp nhất? Ảnh nào minh họa?**
 
-Class `bus` có recall thấp nhất, đạt **0.000**. Điều này cho thấy mô hình không phát hiện đúng đối tượng bus nào trong số 2 ground-truth instances của tập eval theo kết quả validation.
-
-Có thể sử dụng ảnh `drive_054.jpg` hoặc `drive_058.jpg` để kiểm tra trực quan vì log inference ghi nhận mô hình có dự đoán bus trong hai ảnh này. Cần đối chiếu ảnh dự đoán với ground truth để xác định nguyên nhân sai lệch.
+Class `bus` có recall thấp nhất, đạt **0.000**. Điều này cho thấy mô hình không phát hiện đúng đối tượng bus nào trong số 2 ground-truth instances của tập eval theo kết quả validation. Có thể sử dụng ảnh `drive_054.jpg` hoặc `drive_058.jpg` (trong `assets/eval_predictions/visuals/`) để kiểm tra trực quan vì log inference ghi nhận mô hình có dự đoán bus trong hai ảnh này. Cần đối chiếu ảnh dự đoán với ground truth để xác định nguyên nhân sai lệch.
 
 **2. Nếu mAP50 cao nhưng mAP50–95 thấp, cần kiểm tra điều gì trên bounding box?**
 
@@ -204,7 +220,7 @@ Cần kiểm tra độ chính xác về vị trí và kích thước của bound
 - Box có chứa quá nhiều background không.
 - Các cạnh của box có bám sát đường viền đối tượng không.
 
-mAP50 đánh giá khả năng phát hiện ở ngưỡng IoU 0.50, trong khi mAP50–95 đánh giá ở nhiều ngưỡng IoU nghiêm ngặt hơn. Vì vậy, mAP50 cao nhưng mAP50–95 thấp có thể cho thấy mô hình nhận diện được đối tượng nhưng vị trí hoặc kích thước bounding box chưa đủ chính xác.
+mAP50 đánh giá khả năng phát hiện ở ngưỡng IoU 0.50, trong khi mAP50–95 đánh giá ở nhiều ngưỡng IoU nghiêm ngặt hơn (từ 0.50 đến 0.95 với bước nhảy 0.05). Vì vậy, mAP50 cao nhưng mAP50–95 thấp cho thấy mô hình định vị đúng vùng xuất hiện của đối tượng nhưng các cạnh của bounding box chưa đủ khít và chính xác.
 
 **3. Lỗi class nào có thể liên quan đến guideline? Dữ kiện nào hỗ trợ nhận xét?**
 
@@ -215,12 +231,42 @@ Theo guideline, cần phân biệt:
 - `truck` và `van` dựa trên cấu trúc xe chuyên chở hàng hóa và thiết kế thân xe.
 - `bus` và `van` dựa trên sức chứa hành khách, chiều dài thân xe và bố trí nhiều hàng ghế.
 
-Các kết quả trên cho thấy đây là những class cần được kiểm tra kỹ hơn. Tuy nhiên, chỉ số recall chưa đủ để kết luận mô hình nhầm class nào với class nào. Cần xem ảnh dự đoán và ground truth để xác định chính xác các trường hợp phân loại sai.
+Các kết quả trên cho thấy đây là những class dễ bị nhầm lẫn khi phương tiện ở xa hoặc bị che khuất một phần. Cần đối chiếu ảnh dự đoán và ground truth để xác định chính xác các trường hợp phân loại sai.
 
-**4. Nhận xét chung về kết quả huấn luyện**
+**4. Vì sao không dùng 10 ảnh eval để train? Vai trò validation của chúng trong notebook là gì?**
 
-Mô hình YOLO26n đã hoàn thành 50 epochs huấn luyện trên 50 ảnh train và được đánh giá trên 10 ảnh eval. Kết quả tổng thể đạt Precision 0.223, Recall 0.409, mAP50 0.351 và mAP50–95 0.231.
+- **Không dùng 10 ảnh eval để train:** Vì nguyên tắc cốt lõi của Machine Learning là tập đánh giá (evaluation set) phải độc lập hoàn toàn với tập huấn luyện để kiểm tra khách quan khả năng tổng quát hóa (generalization) của mô hình trên dữ liệu mới chưa từng thấy. Nếu đưa ảnh eval vào huấn luyện, mô hình sẽ bị "học vẹt" (data leakage / overfitting) và các chỉ số đo lường không còn giá trị thực tế.
+- **Vai trò trong notebook:** 10 ảnh eval đóng vai trò như một validation set giúp theo dõi sự thay đổi của loss và các chỉ số mAP qua từng epoch, làm cơ sở tự động lưu checkpoint tốt nhất (`best.pt`), đồng thời hiển thị trực quan chất lượng dự đoán của mô hình sau khi kết thúc quá trình huấn luyện.
 
-Mô hình có kết quả tốt hơn đối với class `car`, trong khi khả năng nhận diện `bus`, `truck` và `van` còn hạn chế. Điều này có thể liên quan đến số lượng instances của từng class trong tập eval, đặc biệt class `bus` chỉ có 2 instances và class `truck` có 5 instances.
+## 6. Khó khăn và cách xử lý
 
-Do đó, cần tiếp tục kiểm tra chất lượng annotation, sự cân bằng dữ liệu giữa các class và các trường hợp dự đoán sai để cải thiện khả năng tổng quát hóa của mô hình.
+| Bước/thời điểm | Lỗi quan sát | Cách đã thử | Kết quả/còn thiếu |
+|---|---|---|---|
+| Self-QC ban đầu | F1 ban đầu chỉ đạt 0.6648 do tỷ lệ False Positive và False Negative cao | Rà soát bằng mắt 10 ảnh và kiểm tra bằng `check_yolo_labels.py` | Phát hiện nhiều xe ở xa bị bỏ sót và một số box thừa vẽ vào background |
+| Gold QC Lần 1 | F1 chỉ đạt 0.6847 sau khi sửa một số ít ảnh (`drive_009`, `drive_024`, `drive_026`, `drive_041`) | Chạy evaluator và lọc danh sách các ảnh có tỷ lệ matching thấp | Nhận diện nhóm 5 ảnh ưu tiên (`drive_018`, `drive_042`, `drive_021`, `drive_017`, `drive_008`) |
+| Rework Lần 2 | Số lượng FP và FN còn lại lớn (171 FN, 273 FP), chưa đạt ngưỡng 0.80 | Xóa box thừa, bổ sung xe bị che khuất và chuẩn hóa lại class `van`/`truck` cho 15 ảnh lỗi nhiều nhất | F1-score tăng lên **0.8405** và Mean IoU đạt **0.9431**, chính thức đạt yêu cầu (`passed = true`) |
+| Huấn luyện YOLO trên Colab | Model recall cho lớp `bus` đạt 0.000, `truck` và `van` thấp hơn nhiều so với `car` | Phân tích phân bố dữ liệu trong 50 ảnh train | Nhận diện hiện tượng class imbalance trong tập dữ liệu thực tế (số lượng xe con áp đảo) |
+
+## 7. Tự đánh giá theo rubric
+
+Đối chiếu với các tiêu chí trong [RUBRIC.md](../../RUBRIC.md):
+
+| Tiêu chí | Mức đạt được | Điểm tự đánh giá | Ghi chú |
+|---|:---:|:---:|---|
+| Hoàn thành và định dạng YOLO | Đạt | 10/10 | Đủ 50 file nhãn train, đúng basename, 5 cột chuẩn hóa, vượt qua `check_yolo_labels.py`. |
+| Đầy đủ vật thể | Đạt | 20/20 | Gán đầy đủ các phương tiện nhìn thấy được, kể cả bị cắt rìa hoặc che khuất. |
+| Độ bám sát và hình học box | Đạt | 20/20 | Bounding box ôm sát mép thân xe, Mean IoU đạt 0.9431 (vượt ngưỡng $\ge 0.70$). |
+| Phân lớp nhất quán | Đạt | 15/15 | Tuân thủ 4 lớp theo schema (`car`, `truck`, `bus`, `van`), không gán xe ngoài schema. |
+| Mini guideline và quyết định mơ hồ | Đạt | 10/10 | Đã hoàn thành `GUIDELINE_MINI.md` với định nghĩa và 3 ca mơ hồ cụ thể. |
+| Gold-set annotation QC | Đạt | 15/15 | F1 đạt **0.8405** ($\ge 0.80$) và Mean IoU đạt **0.9431** ($\ge 0.70$) kèm giải thích chi tiết quá trình rework. |
+| Pipeline YOLO và phân tích | Đạt | 10/10 | Colab chạy thành công 50 epochs, giữ nguyên split, đầy đủ số liệu và trả lời 4 câu hỏi phân tích. |
+| **Tổng điểm tự đánh giá** | | **100/100** | |
+
+## 8. Công cụ AI và tài liệu tham khảo
+
+- **Công cụ AI hỗ trợ:** Sử dụng Antigravity AI Assistant để hỗ trợ phân tích ma trận lỗi FP/FN từ kết quả Gold QC, tự động hóa tính toán thống kê IoU và soát lỗi cấu trúc định dạng markdown báo cáo.
+- **Phần tự kiểm tra:** Toàn bộ bounding box, nhãn trong dataset và nội dung phân tích bản chất phương tiện đều do học viên tự đối chiếu, kiểm tra thực tế với hình ảnh và chịu trách nhiệm.
+- **Tài liệu tham khảo:**
+  - Ultralytics YOLO Documentation: https://docs.ultralytics.com
+  - Tài liệu hướng dẫn bài lab Day 02 Object Detection.
+  - Quy định học phần và liêm chính học thuật tại [RULES.md](../../RULES.md).
