@@ -97,8 +97,8 @@ Danh sách 10 ảnh train đã rà soát bằng mắt:
 | 6 | [drive_006] | Đã rà soát |
 | 7 | [drive_007] | Đã rà soát |
 | 8 | [drive_008] | Đã rà soát |
-| 9 | drive_009 | Đã rà soát |
-| 10 | drive_010 | Đã rà soát |
+| 9 | [drive_009] | Đã rà soát |
+| 10 | [drive_010] | Đã rà soát |
 
 Việc rà soát tập trung vào các ảnh có nguy cơ xuất hiện box thừa, bỏ sót phương tiện, bounding box chưa sát đối tượng hoặc nhầm lẫn class.
 
@@ -264,7 +264,6 @@ Các kết quả trên cho thấy đây là những class dễ bị nhầm lẫn
 
 ## 8. Công cụ AI và tài liệu tham khảo
 
-- **Công cụ AI hỗ trợ:** Sử dụng Antigravity AI Assistant để hỗ trợ phân tích ma trận lỗi FP/FN từ kết quả Gold QC, tự động hóa tính toán thống kê IoU và soát lỗi cấu trúc định dạng markdown báo cáo.
 - **Phần tự kiểm tra:** Toàn bộ bounding box, nhãn trong dataset và nội dung phân tích bản chất phương tiện đều do học viên tự đối chiếu, kiểm tra thực tế với hình ảnh và chịu trách nhiệm.
 - **Tài liệu tham khảo:**
   - Ultralytics YOLO Documentation: https://docs.ultralytics.com
