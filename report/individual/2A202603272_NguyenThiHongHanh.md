@@ -4,11 +4,11 @@
 
 ## 1. Thông tin học viên
 
-- Họ tên:
-- MSSV:
-- Email:
-- Lớp:
-- Link repo bài làm:
+- Họ tên: Nguyễn Thị Hồng Hạnh
+- MSSV:2A202603272
+- Email:walnut171225@gmail.com
+- Lớp: 2B
+- Link repo bài làm: https://github.com/walnut1712/K5-L2B-Day02-NguyenThiHongHanh-2A202603272-ObjectDetection 
 - Link Colab đã chạy:
 
 ## 2. Schema và mini guideline
