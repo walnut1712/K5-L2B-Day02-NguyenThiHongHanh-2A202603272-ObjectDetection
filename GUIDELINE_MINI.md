@@ -27,6 +27,6 @@
 
 | Ảnh | Tình huống | Quyết định cuối | Lý do theo schema |
 | --- | --- | --- | --- |
-| `drive_...` | | | |
-| `drive_...` | | | |
-| `drive_...` | | | |
+| `drive_001.jpg` | Một chiếc xe màu trắng ở phía bên trái ảnh có thân xe khá vuông, kích thước nhỏ và khó phân biệt với car. | van| Xe có thiết kế thân kín, hình hộp và khoang chứa liền với thân xe, phù hợp với định nghĩa van hơn car.|
+| `drive_002.jpg` | Một chiếc xe buýt màu trắng lớn xuất hiện gần trung tâm ảnh, bị các phương tiện khác che khuất một phần.|bus | Có kích thước lớn, thiết kế chuyên chở nhiều hành khách và đặc trưng của xe buýt. Vẫn gán nhãn vì có thể nhận diện rõ lớp đối tượng. Bật thuộc tính Occluded nếu bị che khuất.|
+| `drive_003.jpg` | Một phương tiện lớn màu xanh ở phía bên phải ảnh bị cắt một phần bởi rìa ảnh.|bus (nếu xác nhận được qua phần thân xe nhìn thấy) | Phần thân xe lớn và thiết kế phù hợp với xe buýt. Bounding box chỉ bao quanh phần nhìn thấy được và không vượt ra ngoài ranh giới ảnh. |
