@@ -199,10 +199,10 @@ Kết quả đánh giá chi tiết được lưu tại `outputs/annotation_evalu
 
 | Chỉ số trên 10 ảnh eval | Giá trị |
 |---|---:|
-| Precision | 0.223 |
-| Recall | 0.409 |
-| mAP50 | 0.351 |
-| mAP50–95 | 0.231 |
+| Precision | 0.415 |
+| Recall | 0.489 |
+| mAP50 | 0.483 |
+| mAP50–95 | 0.310 |
 
 Các file kết quả trực quan (ảnh dự đoán và đồ thị đánh giá) được lưu trữ tại `report/individual/assets/eval_predictions/` và `report/individual/assets/yolo26_runs/`.
 
